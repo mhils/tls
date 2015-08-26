@@ -4,8 +4,8 @@
 
 import pytest
 
-from tls.ciphersuites import CipherSuites, select_preferred_ciphersuite
-from tls.exceptions import UnsupportedCipherException
+from ..ciphersuites import CipherSuites, select_preferred_ciphersuite
+from ..exceptions import UnsupportedCipherException
 
 
 def test_ciphersuites():

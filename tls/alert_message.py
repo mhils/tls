@@ -8,7 +8,7 @@ from enum import Enum
 
 from characteristic import attributes
 
-from tls import _constructs
+from . import _constructs
 
 
 class AlertLevel(Enum):

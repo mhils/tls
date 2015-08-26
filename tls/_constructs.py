@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function
 
 from construct import Array, Bytes, Struct, UBInt16, UBInt32, UBInt8
 
-from tls.utils import UBInt24
+from .utils import UBInt24
 
 
 ProtocolVersion = Struct(

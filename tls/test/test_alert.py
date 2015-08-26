@@ -4,7 +4,7 @@
 
 from __future__ import absolute_import, division, print_function
 
-from tls.alert_message import Alert, AlertDescription, AlertLevel
+from ..alert_message import Alert, AlertDescription, AlertLevel
 
 
 class TestAlert(object):

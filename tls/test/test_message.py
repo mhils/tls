@@ -4,9 +4,9 @@
 
 from __future__ import absolute_import, division, print_function
 
-from tls.hello_message import ClientHello, ProtocolVersion, ServerHello
+from ..hello_message import ClientHello, ProtocolVersion, ServerHello
 
-from tls.message import (
+from ..message import (
     Certificate, CertificateRequest, ClientCertificateType, Finished,
     Handshake, HandshakeType, HashAlgorithm, HelloRequest, PreMasterSecret,
     ServerDHParams, ServerHelloDone, SignatureAlgorithm

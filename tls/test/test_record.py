@@ -8,7 +8,7 @@ from construct.core import FieldError
 
 import pytest
 
-from tls.record import (
+from ..record import (
     ContentType, TLSCiphertext, TLSCompressed, TLSPlaintext
 )
 

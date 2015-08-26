@@ -12,7 +12,7 @@ from construct import Container
 
 from six import BytesIO
 
-from tls import _constructs
+from . import _constructs
 
 
 @attributes(['major', 'minor'])

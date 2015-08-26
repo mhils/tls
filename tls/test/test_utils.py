@@ -8,7 +8,7 @@ from construct.core import Construct
 
 import pytest
 
-from tls.utils import UBInt24, _UBInt24
+from ..utils import UBInt24, _UBInt24
 
 
 @pytest.mark.parametrize("byte,number", [

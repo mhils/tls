@@ -10,7 +10,7 @@ from characteristic import attributes
 
 from construct import Container
 
-from tls import _constructs
+from . import _constructs
 
 
 @attributes(['major', 'minor'])

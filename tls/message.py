@@ -12,9 +12,9 @@ from construct import Container
 
 from six import BytesIO
 
-from tls import _constructs
+from . import _constructs
 
-from tls.hello_message import (
+from .hello_message import (
     ClientHello, ProtocolVersion, ServerHello
 )
 
