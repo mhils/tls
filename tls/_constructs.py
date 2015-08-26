@@ -4,10 +4,10 @@
 
 from __future__ import absolute_import, division, print_function
 
-from construct import Array, Bytes, Struct, UBInt16, UBInt32, UBInt8
+from construct import (Array, Bytes, Struct, UBInt16, UBInt32, UBInt8, PascalString, Embed, TunnelAdapter, GreedyRange,
+                       Switch, OptionalGreedyRange)
 
 from tls.utils import UBInt24
-
 
 ProtocolVersion = Struct(
     "version",
@@ -63,11 +63,57 @@ CompressionMethods = Struct(
     Array(lambda ctx: ctx.length, UBInt8("compression_methods")),
 )
 
+ServerName = Struct(
+    "",
+    UBInt8("type"),
+    PascalString("name", length_field=UBInt16("length")),
+)
+
+SNIExtension = Struct(
+    "",
+    TunnelAdapter(
+        PascalString("server_names", length_field=UBInt16("length")),
+        TunnelAdapter(
+            PascalString("", length_field=UBInt16("length")),
+            GreedyRange(ServerName)
+        ),
+    ),
+)
+
+ALPNExtension = Struct(
+    "",
+    TunnelAdapter(
+        PascalString("alpn_protocols", length_field=UBInt16("length")),
+        TunnelAdapter(
+            PascalString("", length_field=UBInt16("length")),
+            GreedyRange(PascalString("name"))
+        ),
+    ),
+)
+
+UnknownExtension = Struct(
+    "",
+    PascalString("bytes", length_field=UBInt16("extensions_length"))
+)
+
 Extension = Struct(
-    "extensions",
+    "Extension",
     UBInt16("type"),
-    UBInt16("length"),
-    Bytes("data", lambda ctx: ctx.length),
+    Embed(
+        Switch(
+            "", lambda ctx: ctx.type,
+            {
+                0x00: SNIExtension,
+                0x10: ALPNExtension
+            },
+            default=UnknownExtension
+        )
+    )
+)
+
+extensions = TunnelAdapter(
+    PascalString("extensions", length_field=UBInt16("extensions_length")),
+    OptionalGreedyRange(Extension)
 )
 
 ClientHello = Struct(
@@ -77,8 +123,7 @@ ClientHello = Struct(
     SessionID,
     CipherSuites,
     CompressionMethods,
-    UBInt16("extensions_length"),
-    Bytes("extensions_bytes", lambda ctx: ctx.extensions_length),
+    extensions,
 )
 
 ServerHello = Struct(
@@ -88,8 +133,7 @@ ServerHello = Struct(
     SessionID,
     Bytes("cipher_suite", 2),
     UBInt8("compression_method"),
-    UBInt16("extensions_length"),
-    Bytes("extensions_bytes", lambda ctx: ctx.extensions_length),
+    extensions,
 )
 
 ClientCertificateType = Struct(
@@ -145,7 +189,7 @@ PreMasterSecret = Struct(
 
 ASN1Cert = Struct(
     "ASN1Cert",
-    UBInt32("length"),   # TODO: Reject packets with length not in 1..2^24-1
+    UBInt32("length"),  # TODO: Reject packets with length not in 1..2^24-1
     Bytes("asn1_cert", lambda ctx: ctx.length),
 )
 
@@ -158,7 +202,7 @@ Certificate = Struct(
 Handshake = Struct(
     "Handshake",
     UBInt8("msg_type"),
-    UBInt24("length"),  # TODO: Reject packets with length > 2 ** 24
+    UBInt24("length"),
     Bytes("body", lambda ctx: ctx.length),
 )
 
