@@ -112,7 +112,7 @@ Extension = Struct(
 )
 
 extensions = TunnelAdapter(
-    PascalString("extensions", length_field=UBInt16("extensions_length")),
+    Optional(PascalString("extensions", length_field=UBInt16("extensions_length"))),
     OptionalGreedyRange(Extension)
 )
 
